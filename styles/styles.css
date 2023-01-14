@@ -99,10 +99,17 @@ body {
 }
 
 .post__container {
-  max-width: 1128px;
+  max-width: 540px;
   margin: 1rem auto;
   background-color: #fff;
   border-radius: var(--rounded-sm);
   box-shadow: 0px 0px 0px 1px var(--gray-80);
   padding: 1rem;
+}
+
+.mt-xs {
+  margin-top: 0.75rem;
+}
+.comment__wrapper .replies {
+  margin-left: 2.75rem;
 }

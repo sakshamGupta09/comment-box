@@ -26,7 +26,20 @@ function postEventsHandler(e) {
   }
   // Reply button
   if (e.target.nodeName === "BUTTON" && e.target.name === btnType.postReply) {
+    replyClickHandler(e);
   }
+}
+
+function replyClickHandler(e) {
+  const commentWrapper = e.target.closest(".comment__wrapper");
+  const isNestedComment = commentWrapper.dataset.reply === "true";
+  if (isNestedComment) {
+    commentWrapper.querySelector(".replies").appendChild(getCommentBoxNode());
+    return;
+  }
+  const node = getNestedRepliesNode();
+  node.appendChild(getCommentBoxNode());
+  commentWrapper.appendChild(node);
 }
 
 // Utilities
@@ -39,7 +52,7 @@ function getNestedRepliesNode() {
 
 function getCommentBoxNode() {
   const DIV = document.createElement("div");
-  DIV.classList.add("comment__box");
+  DIV.classList.add("comment__box", "mt-xs");
 
   const INPUT = document.createElement("input");
   INPUT.setAttribute("type", "text");
@@ -50,7 +63,7 @@ function getCommentBoxNode() {
   const BUTTON = document.createElement("button");
   BUTTON.setAttribute("name", "post-comment");
   BUTTON.classList.add("btn", "btn--primary");
-  BUTTON.textContent = "Post";
+  BUTTON.textContent = "Reply";
 
   DIV.append(INPUT, BUTTON);
   return DIV;
@@ -69,9 +82,10 @@ function getCommentValue(e) {
   return value;
 }
 
-function getCommentNode(commentValue) {
+function getCommentNode(commentValue, isNestedComment) {
   const ARTICLE = document.createElement("article");
   ARTICLE.classList.add("comment__wrapper");
+  ARTICLE.setAttribute("data-reply", isNestedComment);
 
   const DIV = document.createElement("div");
   DIV.classList.add("comment");
@@ -88,7 +102,7 @@ function getCommentNode(commentValue) {
 }
 
 function postComment(comment, isNestedComment = false) {
-  const commentNode = getCommentNode(comment);
+  const commentNode = getCommentNode(comment, isNestedComment);
   commentsContainerElement.prepend(commentNode);
   return;
 }
