@@ -1,5 +1,15 @@
 :root {
   --bodybackgroundcolor: #f3f2ef;
+  --text-sm: 0.875rem;
+  --rounded-lg: 1.6rem;
+  --rounded-md: 1.25rem;
+  --rounded-sm: 0.8rem;
+  --rounded-xs: 0.4rem;
+  --gray-primary: rgba(0, 0, 0, 0.3);
+  --gray-80: rgba(0, 0, 0, 0.08);
+  --blue-70: #0a66c2;
+  --blue-80: #004182;
+  --commentBgColor: #f2f2f2;
 }
 
 *,
@@ -25,53 +35,74 @@ body {
 .comment__input {
   display: block;
   width: 100%;
-  border: 1px solid rgba(0, 0, 0, 0.3);
-  border-radius: 1.25rem;
+  border: 1px solid var(--gray-primary);
+  border-radius: var(--rounded-md);
   padding: 0.725rem 1rem;
   outline: none;
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: #000000e6;
+  font-size: var(--text-sm);
+  font-weight: inherit;
+  color: inherit;
 }
 
 .comment__input:focus {
-  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 0 0 1px var(--gray-primary);
 }
 
 .btn {
   display: inline-block;
-  border-radius: 1.6rem;
   border: none;
-  padding: 0.2rem 0.8rem;
   cursor: pointer;
-  font-size: 0.875rem;
-  font-weight: 600;
+  font-size: var(--text-sm);
+  font-weight: inherit;
   text-align: center;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 167ms;
 }
 
-.btn--post-comment {
+.btn--primary {
+  background-color: var(--blue-70);
   color: #fff;
-  background-color: #0a66c2;
   min-height: 1.5rem;
+  border-radius: var(--rounded-lg);
+  padding: 0.2rem 0.8rem;
+  margin-top: 0.75rem;
+}
+
+.btn--primary:hover {
+  background-color: var(--blue-80);
+}
+
+.btn--secondary {
+  background-color: transparent;
+  border-radius: var(--rounded-xs);
+  padding: 0 0.4rem;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.btn--secondary:hover {
+  background-color: var(--gray-80);
 }
 
 :is(button, input) {
   font-family: inherit;
 }
 
-.comment {
-  background-color: #f2f2f2;
-  padding: 1.2rem;
-  border-radius: 0.8rem;
+.comment__wrapper {
   margin: 1.2rem 0;
-  font-size: 0.875rem;
+}
+
+.comment {
+  background-color: var(--commentBgColor);
+  padding: 1.2rem;
+  border-radius: var(--rounded-sm);
+  font-size: var(--text-sm);
 }
 
 .post__container {
   max-width: 1128px;
   margin: 1rem auto;
   background-color: #fff;
-  border-radius: 0.8rem;
-  box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.08);
+  border-radius: var(--rounded-sm);
+  box-shadow: 0px 0px 0px 1px var(--gray-80);
   padding: 1rem;
 }
