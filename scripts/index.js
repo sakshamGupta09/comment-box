@@ -28,7 +28,7 @@ function postEventsHandler(e) {
     comment && postComment(comment);
     return;
   }
-  // Post Rply button
+  // Post Reply button
   if (
     e.target.nodeName === "BUTTON" &&
     e.target.name === btnType.postNewReply
@@ -51,24 +51,18 @@ function replyClickHandler(e) {
   if (commentWrapper.querySelector(".comment__box")) {
     return;
   }
-  const isNestedComment = commentWrapper.querySelector(".replies");
+  let replyContainer;
 
-  if (isNestedComment) {
-    commentWrapper.querySelector(".replies").appendChild(getCommentBoxNode());
-    return;
+  if (commentWrapper.dataset.type === "comment") {
+    replyContainer = commentWrapper.querySelector(".replies");
+  } else {
+    replyContainer = commentWrapper.closest(".replies");
   }
-  const node = getNestedRepliesNode();
-  node.appendChild(getCommentBoxNode());
-  commentWrapper.appendChild(node);
+
+  replyContainer.appendChild(getCommentBoxNode());
 }
 
 // Utilities
-
-function getNestedRepliesNode() {
-  const DIV = document.createElement("div");
-  DIV.classList.add("replies");
-  return DIV;
-}
 
 function getCommentBoxNode() {
   const DIV = document.createElement("div");
@@ -102,9 +96,10 @@ function getCommentValue(e) {
   return value;
 }
 
-function getCommentNode(commentValue) {
+function getCommentNode(commentValue, isComment = true) {
   const ARTICLE = document.createElement("article");
   ARTICLE.classList.add("comment__wrapper");
+  ARTICLE.dataset.type = isComment ? "comment" : "reply";
 
   const DIV = document.createElement("div");
   DIV.classList.add("comment");
@@ -117,6 +112,12 @@ function getCommentNode(commentValue) {
 
   ARTICLE.append(DIV, BUTTON);
 
+  if (isComment) {
+    const DIV_REPLIES = document.createElement("div");
+    DIV_REPLIES.classList.add("replies");
+    ARTICLE.append(DIV_REPLIES);
+  }
+
   return ARTICLE;
 }
 
@@ -126,8 +127,8 @@ function postComment(comment) {
 }
 
 function postReplyToComment(e, comment) {
-  const commentNode = getCommentNode(comment);
-  const parent = e.target.closest(".replies");
-  parent.appendChild(commentNode);
-  e.target.parentElement.remove();
+  const commentNode = getCommentNode(comment, false);
+  const repliesContainer = e.target.closest(".replies");
+  repliesContainer.appendChild(commentNode);
+  e.target.parentNode.remove();
 }
