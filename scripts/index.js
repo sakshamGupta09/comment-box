@@ -1,20 +1,10 @@
-// Constants
-
-const btnType = {
-  postNewComment: "comment-box-post-btn",
-  postNewReply: "comment-box-reply-btn",
-  replyToComment: "reply-to-comment-btn",
-  deleteComment: "delete-comment",
-  editComment: "edit-comment",
-  cancelChanges: "cancel-changes",
-  saveChanges: "save-changes",
-};
+import { BUTTON_TYPES } from "../constants/button-types.js";
 
 // Dom elements
 
 const postContainerElement = document.getElementById("post-container");
 
-const commentsContainerElement = document.getElementById("comments-container");
+const commentsContainerElement = document.getElementById("comments");
 
 // Event listeners
 
@@ -24,56 +14,41 @@ postContainerElement.addEventListener("click", postEventsHandler);
 
 function postEventsHandler(e) {
   // Post Comment button
-  if (
-    e.target.nodeName === "BUTTON" &&
-    e.target.name === btnType.postNewComment
-  ) {
+  if (e.target.name === BUTTON_TYPES.postComment) {
     const comment = getCommentValue(e);
     comment && postComment(comment);
     return;
   }
+  // Reply button
+  if (e.target.name === BUTTON_TYPES.replyToComment) {
+    replyClickHandler(e);
+  }
   // Post Reply button
-  if (
-    e.target.nodeName === "BUTTON" &&
-    e.target.name === btnType.postNewReply
-  ) {
+  if (e.target.name === BUTTON_TYPES.postReply) {
     const comment = getCommentValue(e);
     comment && postReplyToComment(e, comment);
     return;
   }
-  // Reply button
-  if (
-    e.target.nodeName === "BUTTON" &&
-    e.target.name === btnType.replyToComment
-  ) {
-    replyClickHandler(e);
-  }
   // Delete comment
-  if (
-    e.target.nodeName === "BUTTON" &&
-    e.target.name === btnType.deleteComment
-  ) {
+  if (e.target.name === BUTTON_TYPES.deleteComment) {
     deleteCommentHandler(e);
   }
   // Edit comment
-  if (e.target.nodeName === "BUTTON" && e.target.name === btnType.editComment) {
+  if (e.target.name === BUTTON_TYPES.editComment) {
     editCommentHandler(e);
   }
   // Cancel editing comment
-  if (
-    e.target.nodeName === "BUTTON" &&
-    e.target.name === btnType.cancelChanges
-  ) {
+  if (e.target.name === BUTTON_TYPES.cancelChanges) {
     cancelEditHandler(e);
   }
   // save updated comment
-  if (e.target.nodeName === "BUTTON" && e.target.name === btnType.saveChanges) {
+  if (e.target.name === BUTTON_TYPES.saveChanges) {
     saveUpdatedCommentHandler(e);
   }
 }
 
 function replyClickHandler(e) {
-  const commentWrapper = e.target.closest(".comment__wrapper");
+  const commentWrapper = e.target.closest(".comment__container");
 
   let replyContainer;
 
@@ -89,16 +64,16 @@ function replyClickHandler(e) {
 }
 
 function deleteCommentHandler(e) {
-  e.target.closest("article.comment__wrapper").remove();
+  e.target.closest("article.comment__container").remove();
 }
 
 function editCommentHandler(e) {
   const commentNode = e.target
-    .closest(".comment__wrapper")
-    .querySelector(".comment__container");
+    .closest(".comment__container")
+    .querySelector(".comment");
 
   commentNode.appendChild(getEditCommentCTAElement());
-  const comment = commentNode.querySelector("p.comment");
+  const comment = commentNode.querySelector("p.comment__content");
   comment.setAttribute("contentEditable", true);
   placeCursorAtEnd(comment);
   e.target.parentNode.remove();
@@ -129,7 +104,7 @@ function getCommentBoxNode() {
   INPUT.classList.add("comment__input");
 
   const BUTTON = document.createElement("button");
-  BUTTON.setAttribute("name", "comment-box-reply-btn");
+  BUTTON.setAttribute("name", "post-reply");
   BUTTON.classList.add("btn", "btn--primary");
   BUTTON.textContent = "Post";
 
@@ -152,14 +127,14 @@ function getCommentValue(e) {
 
 function getCommentNode(commentValue, isComment = true) {
   const ARTICLE = document.createElement("article");
-  ARTICLE.classList.add("comment__wrapper");
+  ARTICLE.classList.add("comment__container");
   ARTICLE.dataset.type = isComment ? "comment" : "reply";
 
   const DIV = document.createElement("div");
-  DIV.classList.add("comment__container");
+  DIV.classList.add("comment");
 
   const PARAGRAPH = document.createElement("p");
-  PARAGRAPH.classList.add("comment");
+  PARAGRAPH.classList.add("comment__content");
   PARAGRAPH.textContent = commentValue;
 
   DIV.appendChild(PARAGRAPH);
@@ -177,22 +152,25 @@ function getCommentNode(commentValue, isComment = true) {
 
 function getCommentCTAElement() {
   const DIV_CTA = document.createElement("div");
-  DIV_CTA.classList.add("cta-container");
+  DIV_CTA.classList.add("comment__cta");
 
-  const BUTTON_REPLY = document.createElement("button");
-  BUTTON_REPLY.textContent = "Reply";
-  BUTTON_REPLY.classList.add("btn", "btn--secondary");
-  BUTTON_REPLY.name = "reply-to-comment-btn";
+  const BUTTON_REPLY = getButtonElement(
+    BUTTON_TYPES.replyToComment,
+    "Reply",
+    "btn btn--secondary"
+  );
 
-  const BUTTON_EDIT = document.createElement("button");
-  BUTTON_EDIT.textContent = "Edit";
-  BUTTON_EDIT.classList.add("btn", "btn--secondary");
-  BUTTON_EDIT.name = "edit-comment";
+  const BUTTON_EDIT = getButtonElement(
+    BUTTON_TYPES.editComment,
+    "Edit",
+    "btn btn--secondary"
+  );
 
-  const BUTTON_DELETE = document.createElement("button");
-  BUTTON_DELETE.textContent = "Delete";
-  BUTTON_DELETE.classList.add("btn", "btn--secondary");
-  BUTTON_DELETE.name = "delete-comment";
+  const BUTTON_DELETE = getButtonElement(
+    BUTTON_TYPES.deleteComment,
+    "Delete",
+    "btn btn--secondary"
+  );
 
   DIV_CTA.append(
     BUTTON_REPLY,
@@ -209,19 +187,29 @@ function getEditCommentCTAElement() {
   const DIV_CTA = document.createElement("div");
   DIV_CTA.classList.add("comment__edit-cta");
 
-  const BUTTON_SAVE = document.createElement("button");
-  BUTTON_SAVE.textContent = "Save Changes";
-  BUTTON_SAVE.classList.add("btn", "btn--primary");
-  BUTTON_SAVE.name = "save-changes";
+  const BUTTON_SAVE = getButtonElement(
+    BUTTON_TYPES.saveChanges,
+    "Save Changes",
+    "btn btn--primary"
+  );
 
-  const BUTTON_CANCEL = document.createElement("button");
-  BUTTON_CANCEL.textContent = "Cancel";
-  BUTTON_CANCEL.classList.add("btn", "btn--tertiary");
-  BUTTON_CANCEL.name = "cancel-changes";
+  const BUTTON_CANCEL = getButtonElement(
+    BUTTON_TYPES.cancelChanges,
+    "Cancel",
+    "btn btn--tertiary"
+  );
 
   DIV_CTA.append(BUTTON_SAVE, BUTTON_CANCEL);
 
   return DIV_CTA;
+}
+
+function getButtonElement(name, text, classes) {
+  const BUTTON = document.createElement("button");
+  BUTTON.textContent = text;
+  BUTTON.className = classes;
+  BUTTON.name = name;
+  return BUTTON;
 }
 
 function postComment(comment) {

@@ -102,13 +102,13 @@ body {
   font-family: inherit;
 }
 
-.comment__wrapper {
+.comment__container {
   margin: 1.2rem 0;
 }
 
-.comment__container {
+.comment {
   background-color: var(--commentBgColor);
-  padding: 0.8rem 1.2rem;
+  padding: 0.8rem;
   border-radius: var(--rounded-sm);
   font-size: var(--text-sm);
 }
@@ -126,17 +126,17 @@ body {
   margin-top: 0.75rem;
 }
 
-.comment__wrapper .replies {
+.comment__container .replies {
   margin-left: 2.75rem;
 }
 
-.cta-container {
+.comment__cta {
   display: flex;
   align-items: center;
   margin-top: 0.4rem;
 }
 
-.cta-container > * {
+.comment__cta > * {
   margin-right: 0.4rem;
 }
 
@@ -153,6 +153,6 @@ body {
   margin-right: 0.8rem;
 }
 
-.comment {
+.comment__content {
   outline: none;
 }
