@@ -152,3 +152,7 @@ body {
 .comment__edit-cta > * {
   margin-right: 0.8rem;
 }
+
+.comment {
+  outline: none;
+}

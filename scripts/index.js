@@ -98,12 +98,23 @@ function editCommentHandler(e) {
     .querySelector(".comment__container");
 
   commentNode.appendChild(getEditCommentCTAElement());
+  const comment = commentNode.querySelector("p.comment");
+  comment.setAttribute("contentEditable", true);
+  placeCursorAtEnd(comment);
   e.target.parentNode.remove();
 }
 
-function cancelEditHandler(e) {}
+function cancelEditHandler(e) {
+  const parent = e.target.parentNode;
+  parent.parentNode.after(getCommentCTAElement());
+  parent.remove();
+}
 
-function saveUpdatedCommentHandler(e) {}
+function saveUpdatedCommentHandler(e) {
+  const parent = e.target.parentNode;
+  parent.parentNode.after(getCommentCTAElement());
+  parent.remove();
+}
 
 // Utilities
 
@@ -148,6 +159,7 @@ function getCommentNode(commentValue, isComment = true) {
   DIV.classList.add("comment__container");
 
   const PARAGRAPH = document.createElement("p");
+  PARAGRAPH.classList.add("comment");
   PARAGRAPH.textContent = commentValue;
 
   DIV.appendChild(PARAGRAPH);
@@ -228,4 +240,14 @@ function getVerticalDividerElement() {
   const DIV = document.createElement("div");
   DIV.classList.add("vertical-divider");
   return DIV;
+}
+
+function placeCursorAtEnd(node) {
+  const selection = window.getSelection();
+  const range = document.createRange();
+  selection.removeAllRanges();
+  range.selectNodeContents(node);
+  range.collapse(false);
+  selection.addRange(range);
+  node.focus();
 }
